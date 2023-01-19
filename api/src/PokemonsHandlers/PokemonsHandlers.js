@@ -1,16 +1,19 @@
 const {
   createPokemon,
   getPokemonsById,
+  getPokemonsDbApi,
   pokemonByName,
-  getAllsPokemons,
 } = require("../controllers/pokemonController");
 
 const getPokemons = async (req, res) => {
   const { name } = req.query;
 
-  const results = name ? await pokemonByName(name) : await getAllsPokemons();
-
-  res.status(200).json(results);
+  try {
+    const results = name ? await pokemonByName(name) : await getPokemonsDbApi();
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(400).json({ error: error.masage });
+  }
 };
 
 const getPokemonsID = async (req, res) => {
@@ -21,7 +24,7 @@ const getPokemonsID = async (req, res) => {
     const pokemonID = await getPokemonsById(id, fuente);
     res.status(200).json(pokemonID);
   } catch (error) {
-    res.status(400).jason({ error: error.mesage });
+    res.status(400).json({ error: error.mesage });
   }
 };
 
@@ -46,8 +49,18 @@ const postPokemons = async (req, res) => {
   }
 };
 
+const getPokemonsType = async (req, res) => {
+  try {
+    const typess = await getApiTypes();
+    res.status(200).json(typess);
+  } catch (error) {
+    res.status(400).json({ error: error.mesage });
+  }
+};
+
 module.exports = {
   getPokemons,
   getPokemonsID,
   postPokemons,
+  getPokemonsType,
 };

@@ -1,11 +1,12 @@
-const { Pokemon } = require("../db");
+const { Pokemon, Type } = require("../db");
 const axios = require("axios");
 
 getPokemonsById = async (id, fuente) => {
   const pokemonID =
     fuente === "api"
       ? (await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)).data
-      : await Pokemon.findByPk(id);
+      : await Pokemon.findByPk(id, { include: Type });
+
   return pokemonID;
 };
 
@@ -34,54 +35,58 @@ const createPokemon = async (
   return newPokemon;
 };
 
-const cleanPokemons = (arr) => {
-  const clean = arr.map((elem) => {
-    return {
-      id: elem.id,
-      name: elem.name,
-      hp: elem.hp,
-      attack: elem.attack,
-      defense: elem.defense,
-      speed: elem.speed,
-      height: elem.height,
-      weight: elem.weight,
-      img: elem.img,
-      types: elem.types,
-      created: false,
-    };
+const getDataBase = async () => {
+  return await Pokemon.findAll({
+    include: Type,
   });
-  return clean;
 };
 
 const getAllsPokemons = async () => {
-  const dataBPoke = await Pokemon.findAll();
+  let pokemonsAll = [];
+  const url = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=40");
+  let pokeData = url.data.results.map((p) => axios.get(p.url));
 
-  const apiPokemonsRaw = await axios.get(
-    "https://pokeapi.co/api/v2/pokemon?limit=100"
-  );
+  let allPokes = pokeData;
 
-  const apiPokemons = cleanPokemons(apiPokemonsRaw);
-
-  return [...apiPokemons, ...dataBPoke];
-};
-
-const pokemonByName = async (name) => {
-  const dataBasePoke = await Pokemon.findAll({ where: { name: name } });
-
-  const apiPokemonsRaw = (await axios.get("https://pokeapi.co/api/v2/pokemon"))
-    .data;
-
-  const apiPokemons = cleanPokemons(apiPokemonsRaw);
-
-  const apifilter = apiPokemons.filter((pokemon) => {
-    pokemon.name === name;
+  let results = await axios.all(allPokes).then((poke) => {
+    poke.map((p) => {
+      pokemonsAll.push({
+        id: p.data.id,
+        name: p.data.name,
+        hp: p.data.stats[0].base_stat,
+        attack: p.data.stats[1].base_stat,
+        defense: p.data.stats[2].base_stat,
+        speed: p.data.stats[5].base_stat,
+        height: p.data.height,
+        weight: p.data.weight,
+        types: p.data.types.map((pt) => pt.type),
+        img: p.data.sprites.other.home.front_default,
+        created: false,
+      });
+    });
+    return pokemonsAll;
   });
-  return [...apifilter, ...dataBasePoke];
+  return results;
 };
 
+const getPokemonsDbApi = async () => {
+  const api = await getAllsPokemons();
+  const db = await getDataBase();
+  const bichos = await db.concat(api);
+  return bichos;
+};
+const pokemonByName = async (name) => {
+  const dbase = await Pokemon.findAll({ where: { name: name } });
+
+  const api = await getAllsPokemons();
+
+  const filteredApi = api.filter((pokemon) => pokemon.name === name);
+
+  return [...dbase, ...filteredApi];
+};
 module.exports = {
   createPokemon,
   getPokemonsById,
+  getPokemonsDbApi,
   pokemonByName,
-  getAllsPokemons,
 };
