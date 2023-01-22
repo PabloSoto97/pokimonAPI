@@ -1,70 +1,6 @@
 const { Pokemon, Type } = require("../db");
 const axios = require("axios");
-
-getPokemonsById = async (id) => {
-  // const pokemonID =
-  //   fuente === "api"
-  //     ? (await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)).data
-  //     : await Pokemon.findByPk(id, { include: Type });
-
-  // return pokemonID;
-
-  let pokemonID;
-
-  if (isNaN(id)) {
-    pokemonID = await Pokemon.findOne({
-      where: { id },
-      include: [
-        {
-          model: Types,
-          attributes: ["name"],
-        },
-      ],
-    });
-
-    if (!pokemonID) {
-      res.status(404).json({ message: "No se Encontro el Pokemon" });
-    } else {
-      pokemonID = {
-        id: pokemon.id,
-        name: pokemon.name,
-        hp: pokemon.hp,
-        attack: pokemon.attack,
-        defense: pokemon.defense,
-        speed: pokemon.speed,
-        height: pokemon.height,
-        weight: pokemon.weight,
-        image: pokemon.image,
-        types: pokemon.types.map((el) => el.name),
-      };
-      res.json(pokemonID);
-    }
-  } else {
-    const apiPokemon = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon/${id}`
-    );
-    // Procesamos la respuesta de la API
-    pokemonID = {
-      id: apiPokemon.data.id,
-      name: apiPokemon.data.name,
-      hp: apiPokemon.data.stats[0].base_stat,
-      attack: apiPokemon.data.stats[1].base_stat,
-      defense: apiPokemon.data.stats[2].base_stat,
-      speed: apiPokemon.data.stats[5].base_stat,
-      height: apiPokemon.data.height,
-      weight: apiPokemon.data.weight,
-      image: apiPokemon.data.sprites.other.home.front_default,
-      types: apiPokemon.data.types.map((el) => el.type.name),
-    };
-    // Validamos si el Pokémon existe
-    if (!pokemonID) {
-      res.status(404).json({ message: "Pokemon not found" });
-    } else {
-      // Respondemos al cliente con el Pokémon
-      res.json(pokemonID);
-    }
-  }
-};
+const { Op } = require("sequelize");
 
 const createPokemon = async (
   name,
@@ -131,18 +67,56 @@ const getPokemonsDbApi = async () => {
   const bichos = await db.concat(api);
   return bichos;
 };
+
 const pokemonByName = async (name) => {
-  const dbase = await Pokemon.findAll({ where: { name: name } });
+  const lower = name.toLowerCase();
+
+  const dbase = await Pokemon.findAll({
+    where: { name: { [Op.iLike]: `%${name}%` } },
+  });
 
   const api = await getAllsPokemons();
 
-  const filteredApi = api.filter((pokemon) => pokemon.name === name);
+  filteredApi = api.filter((pokemon) => pokemon.name == lower);
+
+  if (filteredApi.length === 0 && dbase.length === 0) {
+    return "No se Encontro el pokemon";
+  }
 
   return [...dbase, ...filteredApi];
 };
+
+const getPokemonById = async (id, fuente) => {
+  const pokemonID =
+    fuente === "api"
+      ? await pokemonByIdapi(id)
+      : await Pokemon.findByPk(id, { include: Type });
+
+  return pokemonID;
+};
+
+const pokemonByIdapi = async (id) => {
+  const resPoke = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  let poke = resPoke;
+  let getId = {
+    id: poke.data.id,
+    name: poke.data.name,
+    hp: poke.data.stats[0].base_stat,
+    attack: poke.data.stats[1].base_stat,
+    defense: poke.data.stats[2].base_stat,
+    speed: poke.data.stats[5].base_stat,
+    height: poke.data.height,
+    weight: poke.data.weight,
+    types: poke.data.types.map((e) => e.type.name),
+    img: poke.data.sprites.other.dream_world.front_default,
+  };
+  return getId;
+};
+
 module.exports = {
   createPokemon,
-  getPokemonsById,
+  getPokemonById,
   getPokemonsDbApi,
+  pokemonByIdapi,
   pokemonByName,
 };
