@@ -1,15 +1,16 @@
 import style from "./Card.module.css";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 const Card = (props) => {
   return (
-    <div className={style.card}>
-      <p className={style.tittle}>Name:{props.name}</p>
-      <Link to="/detail">
-        <img className={style.image} src={props.img}></img>
-      </Link>
+    <NavLink to={`/pokemons/${props.id}`}>
+      <div className={style.card}>
+        <p className={style.tittle}>Name: {props.name}</p>
 
-      <div className={style.types}>Type:{props.types}</div>
-    </div>
+        <img className={style.image} src={props.img}></img>
+
+        <div className={style.types}>Type: {props.types}</div>
+      </div>
+    </NavLink>
   );
 };
 

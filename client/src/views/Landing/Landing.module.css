@@ -1,0 +1,38 @@
+/* Establecer una imagen de fondo para la página */
+.body {
+  background-image: url("../../img/4167709.gif");
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+}
+.contentcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.image {
+  width: 20%;
+  height: 20%;
+}
+
+.button {
+  background-color: #181a18;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #3e8e41;
+}

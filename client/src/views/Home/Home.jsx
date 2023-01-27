@@ -10,10 +10,10 @@ const Home = () => {
     dispatch(getPokemons());
   }, [dispatch]);
   return (
-    <>
+    <div>
       <h1>Estamos En Home</h1>
       <CardsContainer />
-    </>
+    </div>
   );
 };
 
