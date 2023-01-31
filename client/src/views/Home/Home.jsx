@@ -45,6 +45,7 @@ const Home = () => {
           <div className={styles.home}>
             <div className={styles.filters}>
               <Filters setCurrentPage={setCurrentPage} setOrder={setOrder} />
+
               <button
                 className={styles.btn}
                 onClick={(e) => {

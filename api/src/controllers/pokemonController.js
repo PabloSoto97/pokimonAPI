@@ -24,6 +24,13 @@ const createPokemon = async (
     img,
     types,
   });
+  const typeDb = await Type.findAll({
+    where: {
+      name: types,
+    },
+  });
+  newPokemon.addType(typeDb);
+
   return newPokemon;
 };
 
@@ -90,7 +97,11 @@ const getPokemonById = async (id, fuente) => {
   const pokemonID =
     fuente === "api"
       ? await pokemonByIdapi(id)
-      : await Pokemon.findByPk(id, { include: Type });
+      : await Pokemon.findByPk(id, {
+          include: {
+            model: Type,
+          },
+        });
 
   return pokemonID;
 };
