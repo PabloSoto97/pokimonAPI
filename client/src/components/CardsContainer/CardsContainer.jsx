@@ -6,7 +6,7 @@ const CardsContainer = () => {
   const pokemons = useSelector((state) => state.pokemons);
 
   return (
-    <div className={style.container}>
+    <div className={style.cards}>
       {pokemons.map((poke) => {
         return (
           <Card

@@ -1,17 +1,34 @@
-import style from "./Card.module.css";
+import React from "react";
 import { NavLink } from "react-router-dom";
-const Card = (props) => {
+import noImage from "../../img/noImage.png";
+import styles from "./Card.module.css";
+
+export default function Card({ name, image, types, id }) {
   return (
-    <NavLink to={`/pokemons/${props.id}`}>
-      <div className={style.card}>
-        <p className={style.tittle}>Name: {props.name}</p>
-
-        <img className={style.image} src={props.img}></img>
-
-        <div className={style.types}>Type: {props.types}</div>
-      </div>
-    </NavLink>
+    <div>
+      <NavLink className={styles.none} to={`/pokemons/${id}`}>
+        <div>
+          <img
+            className={styles.img}
+            src={image ? image : noImage}
+            alt="img not found"
+            width="200px"
+            height="250vh"
+          />
+          <h2>{name.charAt(0).toUpperCase() + name.slice(1)}</h2>
+          <div className={styles.types}>
+            {types?.map((e, k) => {
+              return (
+                <div className={styles.types} key={k}>
+                  <p className={styles.text}>
+                    {e.name.charAt(0).toUpperCase() + e.name.slice(1)}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </NavLink>
+    </div>
   );
-};
-
-export default Card;
+}

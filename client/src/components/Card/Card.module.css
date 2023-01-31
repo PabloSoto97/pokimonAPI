@@ -1,47 +1,31 @@
-.card {
-  width: 250px;
-  height: 350px;
-  margin: 10px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px 0 rgba(150, 146, 146, 0.2),
-    0 6px 20px 0 rgba(100, 98, 98, 0.19);
+.img {
+  width: 8vw;
+  height: 8vw;
+}
+
+.types {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  transition: transform 0.2s;
-}
-
-.card :hover {
-  transform: scale(1.1);
-  opacity: 1;
-}
-
-.card .image {
-  width: 90%;
-  margin-bottom: 10px;
-}
-
-.card .tittle {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 24px;
-  color: rgb(139, 182, 21);
-  text-align: center;
-  margin-bottom: 10px;
-  font-family: "Arcade", cursive;
+  gap: 10px;
+  margin-bottom: 1vh;
   text-decoration: none;
 }
 
-.card .types {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 24px;
-  color: rgb(139, 182, 21);
-  text-align: center;
-  margin-bottom: 10px;
-  font-family: "Arcade", cursive;
+.typesImg {
+  width: 2vw;
+  height: 2vw;
+}
+
+.text {
+  text-decoration: none;
+  font-family: "Verdana", sans-serif;
+  font-size: 0.8rem;
+  color: rgba(48, 30, 9, 0.616);
+}
+
+.none {
+  text-decoration: none;
+  color: rgba(48, 30, 9, 0.616);
 }
