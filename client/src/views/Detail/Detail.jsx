@@ -43,8 +43,8 @@ const Detail = (props) => {
         <p>Speed Points {pokemon.speed}</p>
         <p>Height {pokemon.height}</p>
         <p>Weight {pokemon.weight}</p>
-        {/* <p>Types: {pokemon.types?.map((e) => e.name + " ")}</p> */}
-        <p>
+        <p>Types: {pokemon.types?.map((e) => e.name + " ")}</p>
+        {/* <p>
           Types:
           {pokemon.types?.map((el) => {
             return (
@@ -53,7 +53,7 @@ const Detail = (props) => {
               </p>
             );
           })}
-        </p>
+        </p> */}
         {/* {pokemon.types?.map((el) => {
           return (
             <div key={`${el}_${id}`} className="one-third">
