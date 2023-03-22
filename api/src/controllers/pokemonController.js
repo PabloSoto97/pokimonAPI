@@ -35,11 +35,35 @@ const createPokemon = async (
 };
 
 const getDataBase = async () => {
-  return await Pokemon.findAll({
-    include: Type,
+  let pokeDb = await Pokemon.findAll({
+    include: [
+      {
+        model: Type,
+        attributes: ["name"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
   });
-};
 
+  // let pokeTMap = pokeDb.map((p) => {
+  //   return {
+  //     id: p.id,
+  //     name: p.name,
+  //     height: p.height,
+  //     weight: p.weight,
+  //     hp: p.hp,
+  //     attack: p.attack,
+  //     defense: p.defense,
+  //     speed: p.speed,
+  //     img: p.img,
+  //     types: p.types.map((curr) => curr.name),
+  //   };
+  // });
+
+  return pokeDb;
+};
 const getAllsPokemons = async () => {
   let pokemonsAll = [];
   const url = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=40");
@@ -100,7 +124,12 @@ const getPokemonById = async (id, fuente) => {
       : await Pokemon.findByPk(id, {
           include: {
             model: Type,
+            attributes: ["name"],
+            through: {
+              attributes: [],
+            }, // aquí se especifican los atributos que se desean seleccionar
           },
+          attributes: { exclude: ["updatedAt", "createdAt"] },
         });
 
   return pokemonID;
@@ -118,7 +147,7 @@ const pokemonByIdapi = async (id) => {
     speed: poke.data.stats[5].base_stat,
     height: poke.data.height,
     weight: poke.data.weight,
-    types: poke.data.types.map((e) => e.type.name),
+    types: poke.data.types.map((e) => e.type),
     img: poke.data.sprites.other.dream_world.front_default,
   };
   return getId;
